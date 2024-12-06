@@ -26,17 +26,20 @@ pipeline {
 
         stage("Deploy to Staging") {
             steps {
-            echo "Deploying to Staging…"
-            // Шаги развертывания на стейджинг
-            sh "./deploy staging"
+                echo "Deploying to Staging..."
+                sh "./deploy-staging.sh"
             }
         }
 
         stage("Deploy to Production") {
+            when {
+                expression {
+                    input message: "Выполнить деплой на Production?", ok: "Да"
+                }
+            }
             steps {
-                echo "Deploying to Production…"
-                // Шаги развертывания на продакшн
-                sh "./deploy production"
+                echo "Deploying to Production..."
+                sh "./deploy-production.sh"
             }
         }
     }
@@ -45,13 +48,11 @@ pipeline {
         always {
             deleteDir()
         }
+        failure {
+            echo "Это будет выполняться, если задача провалилась"
+            mail to: "gladiolud64english@gmail.com",
+            subject: "${env.JOB_NAME} – Сборка № ${env.BUILD_NUMBER} провалилась",
+            body: "Для получения дополнительной информации о провале пайплайна, проверьте консольный вывод по адресу ${env.BUILD_URL}"
+        }
     }
-    
-    failure {
-        echo "Это будет выполняться, если задача провалилась"
-        mail to: "gladiolud64english@gmail.com",
-        subject: "${env.JOB_NAME} – Сборка № ${env.BUILD_NUMBER} провалилась",
-        body: "Для получения дополнительной информации о провале пайплайна, проверьте консольный вывод по адресу ${env.BUILD_URL}"
-    }
-
 }
