@@ -27,6 +27,7 @@ pipeline {
         stage("Deploy to Staging") {
             steps {
                 echo "Deploying to Staging..."
+                sh "chmod +x ./deploy-staging.sh"
                 sh "./deploy-staging.sh"
             }
         }
@@ -39,6 +40,7 @@ pipeline {
             }
             steps {
                 echo "Deploying to Production..."
+                sh "chmod +x ./deploy-production.sh"
                 sh "./deploy-production.sh"
             }
         }
