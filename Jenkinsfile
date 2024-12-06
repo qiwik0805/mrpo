@@ -33,12 +33,11 @@ pipeline {
         }
 
         stage("Deploy to Production") {
-            when {
-                expression {
+            steps {
+                script {
+                    // Prompt user for confirmation
                     input message: "Выполнить деплой на Production?", ok: "Да"
                 }
-            }
-            steps {
                 echo "Deploying to Production..."
                 sh "chmod +x ./deploy-production.sh"
                 sh "./deploy-production.sh"
